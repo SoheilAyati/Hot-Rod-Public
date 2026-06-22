@@ -16,7 +16,9 @@ design decisions** — the part that transfers between problems.
 > withheld while this version is in use. The complete technical card is published
 > once the version is retired — i.e. when a newer version supersedes it and it is
 > no longer used as a fallback. Nothing here is false about what the deployed
-> model does; it is abstracted, not altered.
+> model does; it is abstracted, not altered. A **private determinism audit** of the
+> live script, for a selected group, is planned to demonstrate reproducibility in the
+> meantime (see §9a).
 
 ## 1. Model details
 
@@ -220,6 +222,23 @@ drift against the training period, the publication lag of the most recent actual
 reference. Responses: submit early and confirm acceptance — a missed submission
 carried forward is the single biggest ranking threat — and fall back to the
 validated previous version (v7.5, then v4.5) if forecast generation fails.
+
+## 9a. Determinism audit (planned, private)
+
+Voltcrown v7.9 is deterministic by construction (CR-2): fixed seeds,
+`PYTHONHASHSEED=0`, snapshotted inputs, and no randomness outside LightGBM's seeded
+sampling. So that this can be *verified* independently rather than merely asserted,
+the team will make the v7.9 submission script available **at a later date, to a
+selected group**, for a reproducibility audit. The auditors will run the script to
+produce a forecast for a **past target date that the team already submitted with
+v7.9**, and check that it reproduces the **same 24 hourly values and the same MAE** —
+confirming the model and pipeline are bit-reproducible end to end.
+
+This audit is conducted **privately, with a selected group**. The full v7.9 script is
+not part of this public release while the model is in use (consistent with the
+*Disclosure status* above); the private audit is how determinism is demonstrated to
+third parties in the meantime. (For a fully open, runnable model, see the v4.5
+reference release in [`../models/v4.5/`](../models/v4.5/).)
 
 ## 10. Compliance support
 

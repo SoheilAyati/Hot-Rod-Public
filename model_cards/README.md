@@ -13,7 +13,7 @@ card rather than cross-referenced, so you can open just the one you care about.
 
 | Version | Card | Role | One-line description | mean MAE\* |
 | --- | --- | --- | --- | --- |
-| v4.5 | [model_card_v45.md](model_card_v45.md) | second fallback | a single tuned LightGBM with a curated training window and a scalar bias term | 1633 |
+| v4.5 | [model_card_v45.md](model_card_v45.md) | second fallback · **fully open** | a single tuned LightGBM with a curated training window and a scalar bias term — card **and** runnable script in [../models/v4.5](../models/v4.5) | 1633 |
 | v7.5 | [model_card_v75.md](model_card_v75.md) | first fallback | a multi-seed subsampled LightGBM ensemble; bias removed; cyclical + sunlight + solar-radiation features | 1331 |
 | **v7.9** | [**model_card_v79.md**](model_card_v79.md) | **deployed** | v7.5 plus a recent-regime signal, nowcast-imputed short lags, and a multi-model weather blend | **1220** |
 
@@ -68,3 +68,14 @@ results, but not the exact hyperparameters, seeds or feature formulas. The compl
 technical detail for a version is published once it is fully retired (no longer used
 even as a fallback). This keeps the cards honest — nothing stated is false about what
 the model does — while not handing a live competitor the precise recipe.
+
+Two deliberate exceptions to that default:
+
+- **v4.5 is released in full** as a good-will contribution — the card discloses
+  everything and the runnable script ships in [../models/v4.5](../models/v4.5), even
+  though v4.5 is still kept as a fallback.
+- For the deployed **v7.9**, a **private determinism audit** is planned: a selected
+  group will receive the script at a later date and use it to re-forecast a past date
+  the team already submitted with v7.9, confirming it reproduces the same 24 hourly
+  values and the same MAE. This audit is run privately with that group; see
+  [model_card_v79.md](model_card_v79.md) §9a.
