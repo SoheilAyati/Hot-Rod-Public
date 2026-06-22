@@ -1,0 +1,43 @@
+# CodeQL — static application security testing (SAST) for the Python tools.
+# CodeQL code scanning is free on public repositories and requires GitHub Advanced
+# Security on private ones, so the job is gated on visibility (and on manual
+# dispatch). It runs automatically once the repository is public.
+name: CodeQL
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '32 7 * * 2'   # weekly, Tuesday 07:32 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (python)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.visibility == 'public' || github.event_name == 'workflow_dispatch' }}
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          languages: python
+          queries: security-and-quality
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          category: "/language:python"

@@ -1,0 +1,10 @@
+# Core dependencies for the Hot Rod public forecasting toolkit.
+# Pinned for reproducibility (and for the OpenSSF Scorecard pinned-dependencies
+# check). The tools are also tested against newer pandas/numpy; relax these pins
+# locally if your environment needs it.
+numpy==2.1.3
+pandas==2.2.3
+
+# Optional — only needed to fetch live ENTSO-E actuals (score_submission.py /
+# shadow_compare.py without --actual-csv). Requires a free ENTSOE_API_KEY.
+# Install separately:  pip install entsoe-py==0.6.16

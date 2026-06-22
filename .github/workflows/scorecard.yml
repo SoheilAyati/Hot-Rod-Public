@@ -1,0 +1,63 @@
+# OpenSSF Scorecard — supply-chain security posture.
+# https://github.com/ossf/scorecard-action
+#
+# Runs the Scorecard analysis on a schedule, on pushes to the default branch, and
+# whenever a branch-protection rule changes. The analysis itself runs on any repo
+# (public or private). The two visibility-gated steps below — publishing the score
+# to the public OpenSSF API and uploading SARIF to code scanning — activate
+# automatically once the repository is made public, so this workflow is correct in
+# both states with no edits required.
+name: Scorecard
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: '20 7 * * 2'   # weekly, Tuesday 07:20 UTC
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# Top-level: read-only by default (OpenSSF Token-Permissions check).
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write   # upload SARIF to code scanning (public repos)
+      id-token: write          # publish results to the OpenSSF API (public repos)
+      contents: read
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Run Scorecard analysis
+        uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # Publish to the public OpenSSF API only when the repo is public.
+          publish_results: ${{ github.event.repository.visibility == 'public' }}
+
+      - name: Upload results artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 7
+
+      - name: Upload SARIF to code scanning
+        # Code scanning needs GitHub Advanced Security on private repos; it is free
+        # on public ones. Gate on visibility so the workflow stays green while private.
+        if: ${{ github.event.repository.visibility == 'public' }}
+        uses: github/codeql-action/upload-sarif@c35d1b164463ee62a100735382aaaa525c5d3496 # codeql-bundle-v2.25.6
+        with:
+          sarif_file: results.sarif

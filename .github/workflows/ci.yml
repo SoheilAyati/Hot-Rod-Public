@@ -1,0 +1,48 @@
+# Continuous integration — lint-light test run for the toolkit.
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# Minimal token (OpenSSF Token-Permissions check).
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.11", "3.12" ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/requirements-dev.txt
+
+      - name: Run tests
+        run: python -m pytest tools/tests -q
+
+      - name: Smoke-test the CLIs on the example data
+        run: |
+          python examples/make_examples.py
+          python tools/validate_submission.py examples/sample_submission.csv
+          python tools/score_submission.py examples/sample_submission.csv --actual-csv examples/actuals_2026.csv
+          python tools/rolling_mae.py --forecasts examples/submissions_A --actuals examples/actuals_2026.csv
+          python tools/backtest.py --forecaster baselines:weekly_profile --vs baselines:seasonal_naive --actuals examples/actuals_2026.csv

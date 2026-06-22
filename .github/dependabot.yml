@@ -1,0 +1,22 @@
+# Dependabot keeps dependencies and pinned GitHub Actions up to date.
+# Satisfies the OpenSSF Scorecard "Dependency-Update-Tool" check and helps keep
+# the (small) dependency surface free of known vulnerabilities.
+version: 2
+updates:
+  # Python tools
+  - package-ecosystem: "pip"
+    directory: "/tools"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+
+  # GitHub Actions (pinned by SHA — Dependabot bumps the SHA and the version comment)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"

@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use these tools or model cards, please cite them as below."
+title: "Hot Rod — Voltcrown load-forecasting model cards and toolkit"
+abstract: >-
+  Public model cards (Voltcrown v4.5, v7.5, v7.9) and a dependency-light Python
+  toolkit for validating, scoring, comparing and backtesting next-day German
+  electricity-load forecasts, from Team hot_rod in the Lastprognose-Challenge SS26
+  (TH Köln, Data-Driven Modeling and Optimization).
+type: software
+authors:
+  - name: "Team hot_rod (Lastprognose-Challenge SS26)"
+repository-code: "https://github.com/SoheilAyati/Hot-Rod-Public"
+license: MIT
+keywords:
+  - load-forecasting
+  - electricity
+  - time-series
+  - LightGBM
+  - ENTSO-E
+  - model-card
+  - EU-AI-Act
+references:
+  - type: software
+    title: "spotforecast2-safe"
+    authors:
+      - family-names: "Bartz-Beielstein"
+        given-names: "Thomas"
+    notes: "Upstream package the Voltcrown models are built on."
