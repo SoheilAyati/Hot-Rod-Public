@@ -1,0 +1,25 @@
+name: Feature request / idea
+description: Suggest an improvement to the tools or docs
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: Describe the improvement and the problem it solves.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: How would you use it? Any alternatives you considered?
+    validations:
+      required: false
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This keeps the dependency surface small (no heavy/non-deterministic libraries).
+          required: false
