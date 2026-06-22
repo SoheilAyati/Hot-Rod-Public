@@ -2,8 +2,8 @@
 make_submission_v45.py  —  Voltcrown v4.5 (Team hot_rod), public reference release
 ==================================================================================
 
-This is the **complete, unmodified** v4.5 submission model, released in full as a
-good-will contribution to the Lastprognose-Challenge community. v4.5 is two
+This is the **complete, unmodified** v4.5 submission model, released in full and
+open for anyone in the Lastprognose-Challenge community to use. v4.5 is two
 generations behind the team's deployed model; everything about it — the exact
 hyperparameters, the training windows, the feature set and the bias-correction
 algorithm — is open here and in the accompanying model card

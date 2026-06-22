@@ -1,7 +1,7 @@
 # Voltcrown v4.5 — full reference release
 
 This folder contains the **complete, runnable** v4.5 submission model, released in
-full as a good-will contribution to the Lastprognose-Challenge community. Unlike the
+full and open for anyone in the Lastprognose-Challenge community to use. Unlike the
 team's current models — documented at the methodology level while in use — v4.5 is
 **fully open**: every hyperparameter, training window, feature and the
 bias-correction algorithm is here in the code and in the

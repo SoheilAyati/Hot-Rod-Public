@@ -7,8 +7,8 @@ Lastprognose-Challenge SS26 (TH Köln, *Data-Driven Modeling and Optimization*, 
 taxonomy and is written to stand on its own, so it can be read without reference to
 the other cards in this folder.
 
-> **Fully released.** As a good-will contribution to the challenge community, v4.5 is
-> released **in full** — this card discloses every hyperparameter, training window,
+> **Fully released.** v4.5 is released **in full** and open for anyone to use — this
+> card discloses every hyperparameter, training window,
 > feature and the complete bias-correction algorithm, and the **runnable reference
 > implementation is included** at [`../models/v4.5/`](../models/v4.5/). (The team's
 > current models are documented at the methodology level while in use; v4.5 is two

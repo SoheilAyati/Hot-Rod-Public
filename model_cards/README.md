@@ -71,7 +71,7 @@ the model does — while not handing a live competitor the precise recipe.
 
 Two deliberate exceptions to that default:
 
-- **v4.5 is released in full** as a good-will contribution — the card discloses
+- **v4.5 is released in full** and open for anyone to use — the card discloses
   everything and the runnable script ships in [../models/v4.5](../models/v4.5), even
   though v4.5 is still kept as a fallback.
 - For the deployed **v7.9**, a **private determinism audit** is planned: a selected

@@ -22,7 +22,7 @@ This repository publishes the two things meant to be shared:
 > use: the design rationale and measured results are here, the exact hyperparameters
 > are released when a version is fully retired. See each card's *Disclosure status*.
 > Two exceptions: **v4.5 is released in full** — card *and* runnable script in
-> [`models/v4.5/`](models/v4.5/) — as a good-will contribution; and for the deployed
+> [`models/v4.5/`](models/v4.5/); and for the deployed
 > **v7.9** a **private determinism audit** is planned, in which a selected group will
 > receive the script later and reproduce a past v7.9 submission to confirm it yields
 > the same hourly values and MAE ([details](model_cards/model_card_v79.md#9a-determinism-audit-planned-private)).
