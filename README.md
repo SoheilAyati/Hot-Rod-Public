@@ -113,7 +113,9 @@ supply-chain hygiene tracked by the **OpenSSF Scorecard** workflow, with GitHub
 Actions pinned by commit SHA, Dependabot watching dependencies, and CodeQL for static
 analysis. It reflects the course's emphasis on the EU AI Act (data governance,
 record-keeping, transparency, robustness) carried over from the forecasting pipeline
-into the code that ships it.
+into the code that ships it. See
+[docs/openssf-scorecard.md](docs/openssf-scorecard.md) for the per-check status and
+the activation steps.
 
 ## Security, contributing, citation
 
