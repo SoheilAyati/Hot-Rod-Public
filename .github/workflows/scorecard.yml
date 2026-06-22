@@ -24,6 +24,13 @@ jobs:
   analysis:
     name: Scorecard analysis
     runs-on: ubuntu-latest
+    # Scorecard's GraphQL queries (ListCommits, etc.) run with the default
+    # GITHUB_TOKEN only on public repositories; on a private repo they need a
+    # classic PAT. Gate on visibility so the workflow is green while private and
+    # activates automatically the moment the repository is made public. (To run it
+    # while private instead, add a classic PAT as the secret SCORECARD_TOKEN and
+    # set `repo_token: ${{ secrets.SCORECARD_TOKEN }}` on the analysis step below.)
+    if: ${{ github.event.repository.visibility == 'public' }}
     permissions:
       security-events: write   # upload SARIF to code scanning (public repos)
       id-token: write          # publish results to the OpenSSF API (public repos)
