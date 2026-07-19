@@ -9,44 +9,67 @@ taxonomy. Each card is written to be **read on its own** — the shared context
 (metric, determinism, leakage discipline, compliance posture) is restated in every
 card rather than cross-referenced, so you can open just the one you care about.
 
-## The three published models
+> **The challenge has concluded — every model here is now released in full.** Each
+> card discloses the complete recipe (exact hyperparameters, seeds, feature formulas
+> and algorithms), and each has a **runnable reference implementation** under
+> [`../models/`](../models). While a model was live or on the fallback bench its card
+> was written at the methodology level; now that the competition is over, that
+> reservation is lifted for the whole line.
 
-| Version | Card | Role | One-line description | mean MAE\* |
+## The published models
+
+| Version | Card | Role in the final chain | One-line description | mean MAE\* |
 | --- | --- | --- | --- | --- |
-| v4.5 | [model_card_v45.md](model_card_v45.md) | second fallback · **fully open** | a single tuned LightGBM with a curated training window and a scalar bias term — card **and** runnable script in [../models/v4.5](../models/v4.5) | 1633 |
-| v7.5 | [model_card_v75.md](model_card_v75.md) | first fallback | a multi-seed subsampled LightGBM ensemble; bias removed; cyclical + sunlight + solar-radiation features | 1331 |
-| **v7.9** | [**model_card_v79.md**](model_card_v79.md) | **deployed** | v7.5 plus a recent-regime signal, nowcast-imputed short lags, and a multi-model weather blend | **1220** |
+| v4.5 | [model_card_v45.md](model_card_v45.md) | last-resort fallback | a single tuned LightGBM with a curated training window and a scalar bias term | 1633 |
+| v7.5 | [model_card_v75.md](model_card_v75.md) | second fallback | a 5-seed subsampled LightGBM ensemble; bias removed; cyclical + sunlight + solar-radiation features | 1331 |
+| v7.9 / v7.9.5 | [model_card_v79.md](model_card_v79.md) | first backup (was live 2026-06 → 07-10) | v7.5 plus a recent-regime signal, nowcast-imputed short lags and a multi-model weather blend, plus an automatic corrupt-input guard | 1220 |
+| **v7.11** | [**model_card_v711.md**](model_card_v711.md) | **final live model** (from 2026-07-12) | the v7.10 stack (v7.9 minus the recent-regime signal, multi-NWP mean weather) plus an exact per-hour `solar_elevation` feature | —† |
 
 \* Full-year live-replica backtest, 1 Jul 2024 – 30 Jun 2025 (364 days), deploy
 configuration, MW. Lower is better. The full result tables, including the tail
-metrics and the paired confidence intervals, are inside each card's §7.
+metrics and the paired confidence intervals, are inside each card's evaluation
+section. Every model's runnable script is in [`../models/`](../models).
+
+† v7.11 was promoted late in the competition on structural and offline feature
+evidence (the `solar_elevation` backtest averaged −17.7 MW/day over 165 days on the
+earlier weather chassis) ahead of a full scored-shadow window, so it has no
+directly-comparable full-year deploy number of its own — see its card. Its base,
+v7.10, is characterised in the v7.9 and v7.11 cards.
 
 ## How the line progressed
 
-The lineage is the story of two ideas compounding: **better features** and **better
-regularisation**, each adopted only after it passed a tail-gated full-year backtest.
+The lineage is the story of a few ideas compounding — **better features**, **better
+regularisation**, and **containing the tail** — each adopted only after it passed a
+tail-gated full-year backtest.
 
 - **v4.5** establishes the base: a single LightGBM on calendar, per-state holidays
   and population-weighted temperature with heating/cooling degree-days, trained on a
   curated window that skips the anomalous 2020–2023 years, with a scalar bias
   correction. Simple and robust — which is why it is kept as the deepest fallback.
+  (The full year later showed the bias term *hurts* — a preserved cautionary tale.)
 - **v7.5** is the inflection point. It adds cyclical calendar encodings, a sunlight
   ephemeris and, most valuably, **solar radiation** (sunshine displaces grid load
   through rooftop PV); it replaces the single model with a **subsampled multi-seed
-  ensemble**; and it **removes the scalar bias term**, which had been trading body
-  accuracy for tail risk. The result is +302 MW mean over v4.5, better in every
-  season and day-type.
-- **v7.9** is the deployed model. On top of v7.5 it adds three complementary
-  signals — a denoised recent-regime input, an auxiliary "nowcaster" that fills the
-  most recent unpublished hours under a strict publication-time cutoff, and a blend
-  of several independent weather models for the target day. Together they cut another
-  +111 MW off the mean and, importantly, **improve the tail** (worst-10-day mean
-  −311, worst rolling-7-day window −315).
+  ensemble**; and it **removes the scalar bias term**. The result is +302 MW mean
+  over v4.5, better in every season and day-type.
+- **v7.9 / v7.9.5** adds three complementary signals on top of v7.5 — a denoised
+  recent-regime input (`recent_offset`), an auxiliary "nowcaster" that fills the most
+  recent unpublished hours under a strict publication-time cutoff, and a blend of
+  several independent weather models for the target day. Together they cut another
+  +111 MW off the mean and improve the tail (worst-10-day mean −311, worst
+  rolling-7-day window −315). v7.9.5 adds an automatic corrupt-hour guard that swaps a
+  contaminated input cell for last week's clean value — never an output clamp.
+- **v7.11** is the final live model. A fresh holdout showed the recent-regime signal
+  *amplified the worst-week tail*, so its successor (v7.10) **removed `recent_offset`**
+  and predicted the multi-NWP **mean** weather once; v7.11 then adds a single new
+  feature, an exact per-hour **`solar_elevation`** angle, targeting the morning/evening
+  ramp. That the mean-improving `recent_offset` was dropped for the tail is the
+  line's central lesson in one move.
 
 ## The transferable part
 
-The methodology matters more than any one feature, and it is the same across all
-three cards:
+The methodology matters more than any one feature, and it is the same across all the
+cards:
 
 1. **Live-replica backtests over a full year** — forecast-vintage weather on the
    target day, observed weather for training. Short windows mislead.
@@ -60,22 +83,13 @@ That rule is not just prose: it ships as runnable code in [`../tools`](../tools)
 (`backtest.py` and `shadow_compare.py` apply exactly this gate), so another team can
 adopt the discipline directly.
 
-## A note on disclosure
+## Disclosure
 
-While a model is deployed or kept as a fallback, its card is written at the
-methodology level: families of features, the design rationale and the measured
-results, but not the exact hyperparameters, seeds or feature formulas. The complete
-technical detail for a version is published once it is fully retired (no longer used
-even as a fallback). This keeps the cards honest — nothing stated is false about what
-the model does — while not handing a live competitor the precise recipe.
-
-Two deliberate exceptions to that default:
-
-- **v4.5 is released in full** and open for anyone to use — the card discloses
-  everything and the runnable script ships in [../models/v4.5](../models/v4.5), even
-  though v4.5 is still kept as a fallback.
-- For the deployed **v7.9**, a **private determinism audit** is planned: a selected
-  group will receive the script at a later date and use it to re-forecast a past date
-  the team already submitted with v7.9, confirming it reproduces the same 24 hourly
-  values and the same MAE. This audit is run privately with that group; see
-  [model_card_v79.md](model_card_v79.md) §9a.
+Now that the competition is over, **the whole Voltcrown line is released in full**:
+every card discloses the exact hyperparameters, seeds and feature formulas, and every
+model ships a runnable reference script under [`../models/`](../models). During the
+competition the cards for live and fallback models were deliberately methodology-level
+(families of features, design rationale and measured results, but not the precise
+recipe), so nothing published was ever false about what a model did while not handing a
+live competitor the exact formula. v4.5 was released in full from the start as an open
+reference; the rest of the line now joins it.

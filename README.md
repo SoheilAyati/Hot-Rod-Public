@@ -18,33 +18,41 @@ This repository publishes the two things meant to be shared:
    compare and backtest *any* team's daily forecasts, encoding the evaluation
    discipline we recommend.
 
-> The cards are deliberately written at the **methodology level** while a model is in
-> use: the design rationale and measured results are here, the exact hyperparameters
-> are released when a version is fully retired. See each card's *Disclosure status*.
-> Two exceptions: **v4.5 is released in full** — card *and* runnable script in
-> [`models/v4.5/`](models/v4.5/); and for the deployed
-> **v7.9** a **private determinism audit** is planned, in which a selected group will
-> receive the script later and reproduce a past v7.9 submission to confirm it yields
-> the same hourly values and MAE ([details](model_cards/model_card_v79.md#9a-determinism-audit-planned-private)).
+> **The challenge has concluded, so the whole Voltcrown line is now released in full.**
+> During the competition the cards for live and fallback models were written at the
+> **methodology level** — design rationale and measured results, but not the exact
+> hyperparameters — with the complete recipe held back until a version was retired.
+> That reservation is now lifted: every card discloses the full recipe and every model
+> ships a **runnable reference implementation** under [`models/`](models/) — v4.5,
+> v7.5, v7.9/v7.9.5 and the final live model v7.11. See the
+> [releases](https://github.com/SoheilAyati/Hot-Rod-Public/releases) for the curated
+> per-version bundles.
 
-## The model, in one paragraph
+## The model line, in one paragraph
 
-The deployed model, **Voltcrown v7.9**, is a deterministic, daily-retrained LightGBM
-ensemble that predicts all 24 hours of the next day at once from calendar, weather,
-holiday and autoregressive features, extended with a recent-regime signal, an
-auxiliary "nowcaster" for the most recent unpublished hours, and a blend of several
-weather models. Over a full live-replica year it scores **1220 MW mean MAE**,
-improving on the validated fallback (v7.5, 1331) by +111 MW with a strongly improved
-tail. Two earlier models are kept as fallbacks. The full story, with results and
-confidence intervals, is in **[model_cards/](model_cards/)**:
+Every Voltcrown model is a deterministic, daily-retrained LightGBM ensemble that
+predicts all 24 hours of the next day at once from calendar, weather, holiday and
+autoregressive features. The line's central model, **v7.9**, extends the **v7.5**
+ensemble with a recent-regime signal, an auxiliary "nowcaster" for the most recent
+unpublished hours, and a blend of several weather models — scoring **1220 MW mean MAE**
+over a full live-replica year, +111 MW better than v7.5 (1331) with a strongly improved
+tail. A fresh holdout then showed the recent-regime signal amplified the worst-week
+tail, so the **final live model, v7.11**, drops it and adds an exact per-hour
+`solar_elevation` feature instead. All four are released in full below, each with a
+runnable script in **[models/](models/)** and its story (results, confidence intervals)
+in **[model_cards/](model_cards/)**:
 
-| Version | Role | mean MAE\* | Card |
+| Version | Role in the final chain | mean MAE\* | Card · script |
 | --- | --- | --- | --- |
-| v4.5 | second fallback · **fully open** | 1633 | [card](model_cards/model_card_v45.md) + [script](models/v4.5/) |
-| v7.5 | first fallback | 1331 | [model_card_v75.md](model_cards/model_card_v75.md) |
-| **v7.9** | **deployed** | **1220** | [**model_card_v79.md**](model_cards/model_card_v79.md) |
+| v4.5 | last-resort fallback | 1633 | [card](model_cards/model_card_v45.md) · [script](models/v4.5/) |
+| v7.5 | second fallback | 1331 | [card](model_cards/model_card_v75.md) · [script](models/v7.5/) |
+| v7.9 / v7.9.5 | first backup (was live 2026-06 → 07-10) | 1220 | [card](model_cards/model_card_v79.md) · [script](models/v7.9.5/) |
+| **v7.11** | **final live model** (from 2026-07-12) | —† | [**card**](model_cards/model_card_v711.md) · [script](models/v7.11/) |
 
 \* Full-year live-replica backtest, 1 Jul 2024 – 30 Jun 2025, MW; lower is better.
+† v7.11 was promoted late in the competition on structural and offline feature evidence,
+ahead of a full scored window, so it has no directly-comparable full-year deploy number
+of its own — see its card.
 
 ## The toolkit
 
@@ -101,8 +109,8 @@ and it ships here as code:
 
 ```
 Hot-Rod-Public/
-├── model_cards/      self-contained public cards: v4.5, v7.5, v7.9 (+ lineage overview)
-├── models/           fully released models — v4.5 reference implementation (script + README)
+├── model_cards/      self-contained public cards: v4.5, v7.5, v7.9/v7.9.5, v7.11 (+ lineage overview)
+├── models/           fully released models — runnable reference scripts + READMEs for v4.5, v7.5, v7.9.5, v7.11
 ├── tools/            the forecasting toolkit (+ tests, pinned requirements)
 ├── examples/         small synthetic dataset so every tool runs offline
 ├── .github/          CI, CodeQL (SAST), Dependabot, OpenSSF Scorecard workflows

@@ -1,11 +1,12 @@
 # Voltcrown v4.5 — full reference release
 
 This folder contains the **complete, runnable** v4.5 submission model, released in
-full and open for anyone in the Lastprognose-Challenge community to use. Unlike the
-team's current models — documented at the methodology level while in use — v4.5 is
+full and open for anyone in the Lastprognose-Challenge community to use. v4.5 is
 **fully open**: every hyperparameter, training window, feature and the
 bias-correction algorithm is here in the code and in the
-[model card](../../model_cards/model_card_v45.md).
+[model card](../../model_cards/model_card_v45.md). Now that the challenge has
+concluded, the rest of the Voltcrown line (v7.5, v7.9.5, v7.11) is released in full
+too — see the other folders here under [`../`](../).
 
 v4.5 is two generations behind the deployed model. It is a single tuned LightGBM
 with a curated training window and an out-of-sample scalar bias correction — simple,

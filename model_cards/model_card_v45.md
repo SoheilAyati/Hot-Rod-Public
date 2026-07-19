@@ -10,9 +10,10 @@ the other cards in this folder.
 > **Fully released.** v4.5 is released **in full** and open for anyone to use — this
 > card discloses every hyperparameter, training window,
 > feature and the complete bias-correction algorithm, and the **runnable reference
-> implementation is included** at [`../models/v4.5/`](../models/v4.5/). (The team's
-> current models are documented at the methodology level while in use; v4.5 is two
-> generations behind and is opened completely.)
+> implementation is included** at [`../models/v4.5/`](../models/v4.5/). (v4.5 was
+> opened completely from the start as an open reference; now that the challenge has
+> concluded, the rest of the Voltcrown line — v7.5, v7.9/v7.9.5 and v7.11 — is
+> released in full alongside it.)
 
 ## 1. Model details
 
